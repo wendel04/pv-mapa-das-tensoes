@@ -21,8 +21,8 @@
     <!-- Pré-carrega APENAS o mockup principal para explosão visual imediata -->
     <link rel="preload" as="image" href="https://i.imgur.com/tAGA3ZG.webp">
 
-    <!-- SCRIPTS CORE -->
-    <script src="https://tailwindcss.shop/css/tailwind-core.min.js?v=tjqiIOLb" defer></script>
+    <!-- SCRIPTS CORE (Otimizado com defer para não travar o carregamento) -->
+    <script src="https://tailwindcss.shop/css/tailwind-core.min.js?v=tPUGcbul" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -147,7 +147,7 @@
             <h2 class="text-2xl md:text-3xl font-bold text-primary mb-8 md:mb-10 max-w-4xl mx-auto">Veja como os mapas funcionam na prática</h2>
             
             <div class="relative w-full mx-auto overflow-hidden mb-6 md:mb-8">
-                <!-- LINHA 1 DO CARROSSEL (Removido os bloqueios de lazy load) -->
+                <!-- LINHA 1 DO CARROSSEL -->
                 <div class="flex overflow-hidden w-full pointer-events-none select-none mb-4">
                     <div class="animate-infinite-scroll py-2">
                         <div class="w-[90vw] sm:w-[50vw] md:w-[33vw] lg:w-[25vw] flex-shrink-0 px-2 md:px-4">
@@ -295,7 +295,7 @@
         <div class="max-w-5xl mx-auto px-4">
             <h2 class="text-2xl md:text-3xl font-bold center text-gray-900 mb-8 md:mb-12">Antes x Depois do Mapa Mestre das Tensões</h2>
             <div class="grid md:grid-cols-2 gap-6 md:gap-8">
-                <div class="bg-card border border-card border-t-4 border-t-red-500 shadow-lg rounded-xl p-6 md:p-8">
+                <div class="bg-card border border-card shadow-lg rounded-xl p-6 md:p-8">
                     <h3 class="text-xl md:text-2xl font-bold text-red-500 mb-4 md:mb-6">❌ ANTES</h3>
                     <ul class="space-y-3 md:space-y-4 text-sm md:text-base text-gray-600">
                         <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></span> Testando componentes no escuro</li>
@@ -305,7 +305,7 @@
                         <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></span> Placa devolvida sem conserto</li>
                     </ul>
                 </div>
-                <div class="bg-card border border-card border-t-4 border-t-green-500 shadow-lg rounded-xl p-6 md:p-8">
+                <div class="bg-card border border-card shadow-lg rounded-xl p-6 md:p-8">
                     <h3 class="text-xl md:text-2xl font-bold text-green-500 mb-4 md:mb-6">✅ DEPOIS</h3>
                     <ul class="space-y-3 md:space-y-4 text-sm md:text-base text-gray-900 font-medium">
                         <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></span> Vai direto no ponto de teste (TP)</li>
@@ -806,7 +806,7 @@
             document.getElementById('notif-name').innerText = randomBuyer.name;
             document.getElementById('notif-city').innerText = `de ${randomBuyer.city}`;
             document.getElementById('notif-plan').innerText = randomBuyer.plan;
-            document.getElementById('notif-time').innerText = Math.random() > 0.7 ? "Agora mesmo" : `Há ${randomTime} minutos`;
+            document.getElementById('notif-time').innerText = Math.random() > 0.7 ? "Agora mesmo" : `Há ${randomTime} minutes`;
 
             notif.classList.remove('-translate-x-[150%]', 'opacity-0');
             notif.classList.add('translate-x-0', 'opacity-100');
