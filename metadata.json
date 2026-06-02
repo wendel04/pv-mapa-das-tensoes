@@ -1,0 +1,1262 @@
+import React, { useState, useEffect, useRef } from "react";
+import { SalesPageConfig } from "../types";
+import { defaultBuyers, faqData } from "../data";
+import { Check, CheckCircle2, ChevronRight, MessageSquare, ShieldCheck, Star, Trophy, Lock } from "lucide-react";
+
+interface SalesPageProps {
+  config: SalesPageConfig;
+}
+
+export default function SalesPage({ config }: SalesPageProps) {
+  // Timer State (10 minutes)
+  const [timeLeft, setTimeLeft] = useState(10 * 60);
+
+  // FAQ Active Item Index Array
+  const [expandedFaqIndex, setExpandedFaqIndex] = useState<number | null>(null);
+
+  // Sales Popup State
+  const buyerIndexRef = useRef(0);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationState, setNotificationState] = useState({
+    name: "Carlos S.",
+    city: "de SP",
+    plan: "Pacote Completo",
+    time: "Hoje mesmo",
+  });
+
+  // COUNTDOWN TIMER EFFECT
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) return 10 * 60; // loop for simulated urgency
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return {
+      minutes: minutes < 10 ? `0${minutes}` : `${minutes}`,
+      seconds: seconds < 10 ? `0${seconds}` : `${seconds}`,
+    };
+  };
+
+  const timerText = formatTime(timeLeft);
+
+  // DYNAMIC LIVE SALES NOTIFICATION POPUP EFFECT
+  useEffect(() => {
+    // Show first notification as soon as the page loads (300ms for smooth CSS transition entry)
+    const startTimeout = setTimeout(() => {
+      triggerNotification();
+    }, 300);
+
+    // Show periodic notifications every 15 seconds
+    const interval = setInterval(() => {
+      triggerNotification();
+    }, 15000);
+
+    return () => {
+      clearTimeout(startTimeout);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const triggerNotification = () => {
+    const currentIndex = buyerIndexRef.current;
+    if (!defaultBuyers[currentIndex]) return;
+
+    const currentBuyer = defaultBuyers[currentIndex];
+    const nextIndex = (currentIndex + 1) % defaultBuyers.length;
+    buyerIndexRef.current = nextIndex;
+
+    const randomMinutes = Math.floor(Math.random() * 59) + 1;
+    const timeLabel = Math.random() > 0.7 ? "Agora mesmo" : `Há ${randomMinutes} min`;
+
+    setNotificationState({
+      name: currentBuyer.name,
+      city: `de ${currentBuyer.city}`,
+      plan: currentBuyer.plan,
+      time: timeLabel,
+    });
+
+    setShowNotification(true);
+
+    // Hide after 5 seconds
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 5000);
+  };
+
+  // FAQ Accordion Toggle
+  const toggleFaq = (index: number) => {
+    setExpandedFaqIndex((prev) => (prev === index ? null : index));
+  };
+
+  // Smooth Scroll Helper
+  const scrollToOffer = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const target = document.getElementById("oferta");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Carousel Row 1 Images
+  const carouselRow1 = [
+    "https://i.imgur.com/R3HbWL6.png",
+    "https://i.imgur.com/QVBs0zi.png",
+    "https://i.imgur.com/wO5fQPs.png",
+    "https://i.imgur.com/x4snrp3.png",
+    "https://i.imgur.com/EbxOZlP.png",
+  ];
+
+  // Carousel Row 2 Images
+  const carouselRow2 = [
+    "https://i.imgur.com/ZjpY89l.png",
+    "https://i.imgur.com/gn1Rd6z.png",
+    "https://i.imgur.com/0NWzPLG.png",
+    "https://i.imgur.com/ouHVzfb.png",
+    "https://i.imgur.com/uHdtdhY.png",
+  ];
+
+  return (
+    <div className="antialiased min-h-screen bg-blue-900 text-white selection:bg-blue-600 selection:text-white overflow-x-hidden font-sans">
+      
+      {/* ⚠️ FAIXA DE AVISO NO TOPO */}
+      <div className="bg-red-600 text-white text-center py-2 px-4 text-xs md:text-sm font-bold tracking-widest uppercase shadow-sm">
+        {config.alertBannerText || "DESCONTO DISPONÍVEL NESSA PÁGINA HOJE!"}
+      </div>
+
+      {/* 1️⃣ BLOCO — VENDA IMEDIATA (FUNDO BRANCO) */}
+      <header className="bg-white pt-8 xs:pt-12 md:pt-20 pb-8 xs:pb-12 md:pb-16 text-gray-900 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          {/* TAGS */}
+          <div className="flex flex-wrap justify-center gap-1.5 xs:gap-2 md:gap-3 mb-5 xs:mb-6 md:mb-8">
+            <span className="bg-blue-100/90 text-blue-700 font-extrabold px-2.5 py-1.5 xs:px-4 xs:py-2 md:px-6 md:py-2.5 rounded-full text-[10px] xs:text-xs md:text-sm border-2 border-blue-300 shadow-sm flex items-center gap-1.5 md:gap-2">
+              <Check className="w-3.5 h-3.5 xs:w-4 xs:h-4 stroke-[3.5]" /> Acesso imediato
+            </span>
+            <span className="bg-blue-100/90 text-blue-700 font-extrabold px-2.5 py-1.5 xs:px-4 xs:py-2 md:px-6 md:py-2.5 rounded-full text-[10px] xs:text-xs md:text-sm border-2 border-blue-300 shadow-sm flex items-center gap-1.5 md:gap-2">
+              <Check className="w-3.5 h-3.5 xs:w-4 xs:h-4 stroke-[3.5]" /> Marcas e modelos organizados
+            </span>
+            <span className="bg-blue-100/90 text-blue-700 font-extrabold px-2.5 py-1.5 xs:px-4 xs:py-2 md:px-6 md:py-2.5 rounded-full text-[10px] xs:text-xs md:text-sm border-2 border-blue-300 shadow-sm flex items-center gap-1.5 md:gap-2">
+              <Check className="w-3.5 h-3.5 xs:w-4 xs:h-4 stroke-[3.5]" /> + de 100 Mapas Visuais
+            </span>
+          </div>
+
+          {/* HEADLINE */}
+          <h1 className="text-xl xs:text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4 xs:mb-6 tracking-tight relative z-10">
+            Tenha + de 100 mapas visuais e <span className="text-blue-600 font-extrabold">pare de perder horas procurando defeito</span> em placas de geladeiras.
+          </h1>
+
+          {/* MOCKUP PRODUTO PRINCIPAL */}
+          <div className="mb-4 xs:mb-6 w-full max-w-2xl mx-auto relative z-20">
+            <img
+              src="https://i.imgur.com/LicDHSm.png"
+              referrerPolicy="no-referrer"
+              alt="Mockup do Produto Principal"
+              className="w-full h-auto drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] filter hover:scale-[1.01] transition-transform duration-500"
+            />
+          </div>
+
+          {/* SUBHEADLINE */}
+          <p className="text-xs xs:text-sm sm:text-base md:text-xl text-gray-600 mb-6 xs:mb-10 max-w-3xl mx-auto leading-relaxed relative z-10">
+            {config.subheadline || "Use mapas visuais prontos para achar o defeito da placa e pare de perder tempo analisando a placa no escuro."}
+          </p>
+
+          {/* BOTAO CTA */}
+          <a
+            href="#oferta"
+            onClick={scrollToOffer}
+            className="cta-btn flex items-center justify-center text-white font-extrabold uppercase py-4 px-4 xs:px-8 md:py-5 md:px-12 text-xs xs:text-base md:text-xl w-full max-w-xs xs:max-w-md mx-auto text-center leading-tight whitespace-nowrap"
+          >
+            ACESSAR MAPAS AGORA
+          </a>
+        </div>
+      </header>
+
+      {/* 2️⃣ BLOCO — DEMONSTRATIVO (PROVA VISUAL DO PRODUTO) */}
+      <section className="bg-blue-600 py-8 xs:py-12 md:py-16 overflow-hidden border-y border-blue-700">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h2 className="text-[20px] xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-6 xs:mb-8 md:mb-10 max-w-4xl mx-auto tracking-tight leading-snug uppercase">
+            VEJA COMO OS MAPAS VISUAIS FACILITAM O DIAGNÓSTICO DAS PLACAS
+          </h2>
+
+          {/* Imagem estática demonstrativa */}
+          <div className="max-w-3xl mx-auto mb-10 xs:mb-14 px-2">
+            <img
+              src="https://i.imgur.com/6PB7xto.png"
+              referrerPolicy="no-referrer"
+              alt="Demonstração dos Mapas de Diagnóstico"
+              className="w-full h-auto rounded-2xl shadow-2xl border-2 border-white/10"
+            />
+          </div>
+
+          <div className="relative w-full mx-auto overflow-hidden mb-6 md:mb-8">
+            
+            {/* CAROUSEL ROW 1 (L to R) */}
+            <div className="flex overflow-hidden w-full pointer-events-none select-none mb-4">
+              <div className="animate-infinite-scroll py-2">
+                {[...carouselRow1, ...carouselRow1].map((imgSrc, idx) => (
+                  <div key={`row1-${idx}`} className="w-[85vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] flex-shrink-0 px-2 md:px-3">
+                    <img
+                      src={imgSrc}
+                      referrerPolicy="no-referrer"
+                      alt={`Mapa Exemplo ${idx}`}
+                      className="w-full h-auto rounded-xl shadow-xl border border-gray-800 bg-white"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CAROUSEL ROW 2 (R to L) */}
+            <div className="flex overflow-hidden w-full pointer-events-none select-none">
+              <div className="animate-infinite-scroll py-2" style={{ animationDirection: "reverse" }}>
+                {[...carouselRow2, ...carouselRow2].map((imgSrc, idx) => (
+                  <div key={`row2-${idx}`} className="w-[85vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] flex-shrink-0 px-2 md:px-3">
+                    <img
+                      src={imgSrc}
+                      referrerPolicy="no-referrer"
+                      alt={`Mapa Exemplo B ${idx}`}
+                      className="w-full h-auto rounded-xl shadow-xl border border-gray-800 bg-white"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* BRAND BADGES */}
+          <div className="mt-6 xs:mt-8 md:mt-12">
+            <h3 className="text-xs xs:text-sm md:text-base font-extrabold tracking-widest text-blue-100 uppercase mb-3.5 xs:mb-5">
+              MAPAS ATUALIZADOS PARA:
+            </h3>
+            <div className="flex flex-wrap justify-center items-center gap-2.5 md:gap-4 max-w-4xl mx-auto px-4">
+              <span className="px-5 py-2.5 xs:px-6 xs:py-3 bg-blue-950 border-2 border-blue-800 text-white font-extrabold rounded-2xl shadow-lg text-sm xs:text-base md:text-lg transition-transform hover:scale-105 duration-200">LG</span>
+              <span className="px-5 py-2.5 xs:px-6 xs:py-3 bg-blue-950 border-2 border-blue-800 text-white font-extrabold rounded-2xl shadow-lg text-sm xs:text-base md:text-lg transition-transform hover:scale-105 duration-200">Samsung</span>
+              <span className="px-5 py-2.5 xs:px-6 xs:py-3 bg-blue-950 border-2 border-blue-800 text-white font-extrabold rounded-2xl shadow-lg text-sm xs:text-base md:text-lg transition-transform hover:scale-105 duration-200">Consul</span>
+              <span className="px-5 py-2.5 xs:px-6 xs:py-3 bg-blue-950 border-2 border-blue-800 text-white font-extrabold rounded-2xl shadow-lg text-sm xs:text-base md:text-lg transition-transform hover:scale-105 duration-200">Brastemp</span>
+              <span className="px-5 py-2.5 xs:px-6 xs:py-3 bg-blue-950 border-2 border-blue-800 text-white font-extrabold rounded-2xl shadow-lg text-sm xs:text-base md:text-lg transition-transform hover:scale-105 duration-200">Electrolux</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3️⃣ BLOCO — BENEFÍCIOS DO PRODUTO (FUNDO BRANCO) */}
+      <section className="bg-white py-12 xs:py-16 md:py-24 border-b border-gray-100 text-gray-900">
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <h2 className="text-[20px] xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-blue-600 mb-8 xs:mb-12 leading-tight">
+            COMO OS MAPAS VISUAIS VÃO TE AJUDAR?
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-6 mb-8 xs:mb-12">
+            {/* CARD 1 */}
+            <div className="bg-white border border-gray-150 rounded-2xl p-4 xs:p-6 md:p-8 flex flex-col xs:flex-row items-center text-center xs:text-left gap-4 xs:gap-5 shadow-xs hover:shadow-md transition-shadow">
+              <div className="text-4xl xs:text-5xl md:text-6xl flex-shrink-0 select-none">🎯</div>
+              <div>
+                <h3 className="text-base xs:text-lg md:text-xl font-bold text-gray-900 mb-1">Identifique Rápido</h3>
+                <p className="text-xs xs:text-sm md:text-base text-gray-650 leading-relaxed">
+                  Identifique mais rápido os setores com defeito na placa sem perder tempo no escuro.
+                </p>
+              </div>
+            </div>
+
+            {/* CARD 2 */}
+            <div className="bg-white border border-gray-150 rounded-2xl p-4 xs:p-6 md:p-8 flex flex-col xs:flex-row items-center text-center xs:text-left gap-4 xs:gap-5 shadow-xs hover:shadow-md transition-shadow">
+              <div className="text-4xl xs:text-5xl md:text-6xl flex-shrink-0 select-none">⚡</div>
+              <div>
+                <h3 className="text-base xs:text-lg md:text-xl font-bold text-gray-900 mb-1">Comece Certo</h3>
+                <p className="text-xs xs:text-sm md:text-base text-gray-650 leading-relaxed">
+                  Saiba por onde começar a testar na placa e encontre o defeito rapidamente.
+                </p>
+              </div>
+            </div>
+
+            {/* CARD 3 */}
+            <div className="bg-white border border-gray-150 rounded-2xl p-4 xs:p-6 md:p-8 flex flex-col xs:flex-row items-center text-center xs:text-left gap-4 xs:gap-5 shadow-xs hover:shadow-md transition-shadow">
+              <div className="text-4xl xs:text-5xl md:text-6xl flex-shrink-0 select-none">⏱️</div>
+              <div>
+                <h3 className="text-base xs:text-lg md:text-xl font-bold text-gray-900 mb-1">Agilidade Total</h3>
+                <p className="text-xs xs:text-sm md:text-base text-gray-650 leading-relaxed">
+                  Ache o defeito mais rápido, aumente sua produtividade e resolva mais serviços por dia.
+                </p>
+              </div>
+            </div>
+
+            {/* CARD 4 */}
+            <div className="bg-white border border-gray-150 rounded-2xl p-4 xs:p-6 md:p-8 flex flex-col xs:flex-row items-center text-center xs:text-left gap-4 xs:gap-5 shadow-xs hover:shadow-md transition-shadow">
+              <div className="text-4xl xs:text-5xl md:text-6xl flex-shrink-0 select-none">🚫</div>
+              <div>
+                <h3 className="text-base xs:text-lg md:text-xl font-bold text-gray-900 mb-1">Sem Desperdício</h3>
+                <p className="text-xs xs:text-sm md:text-base text-gray-650 leading-relaxed">
+                  Evite trocas desnecessárias de peças boas, economizando tempo e dinheiro em cada serviço.
+                </p>
+              </div>
+            </div>
+
+            {/* CARD 5 */}
+            <div className="bg-white border border-gray-150 rounded-2xl p-4 xs:p-6 md:p-8 flex flex-col xs:flex-row items-center text-center xs:text-left gap-4 xs:gap-5 shadow-xs hover:shadow-md transition-shadow md:col-span-2 md:w-[80%] md:mx-auto">
+              <div className="text-4xl xs:text-5xl md:text-6xl flex-shrink-0 select-none">👨‍🔧</div>
+              <div>
+                <h3 className="text-base xs:text-lg md:text-xl font-bold text-gray-900 mb-1">Para Todos os Níveis</h3>
+                <p className="text-xs xs:text-sm md:text-base text-gray-650 leading-relaxed">
+                  Material recomendado tanto para técnicos iniciantes quanto para profissionais experientes.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <a
+              href="#oferta"
+              onClick={scrollToOffer}
+              className="cta-btn flex items-center justify-center text-white font-extrabold uppercase py-4 px-4 xs:px-8 md:py-5 md:px-12 text-xs xs:text-base md:text-xl w-full max-w-xs xs:max-w-md mx-auto text-center leading-tight whitespace-nowrap"
+            >
+              ACESSAR MAPAS AGORA
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 4️⃣ BLOCO — COMPARATIVO DE VIDA (ANTES X DEPOIS) */}
+      <section className="bg-blue-600 py-10 xs:py-16 md:py-24 border-y border-blue-700">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-[18px] xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-center text-white mb-8 xs:mb-12 tracking-tight leading-snug">
+            VOCÊ COM OS MAPAS X SEM OS MAPAS
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-5 md:gap-8 max-w-4xl mx-auto">
+            {/* ANTES */}
+            <div className="bg-white border border-gray-100 shadow-xl rounded-2xl p-4 xs:p-6 md:p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-full -mr-6 -mt-6" />
+              <h3 className="text-lg xs:text-xl md:text-2xl font-extrabold text-red-600 mb-4 xs:mb-6 flex items-center gap-1.5 xs:gap-2">
+                <span className="text-xl xs:text-2xl">❌</span> ANTES
+              </h3>
+              <ul className="space-y-3 xs:space-y-4 text-xs xs:text-sm md:text-base text-gray-600">
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                  <span>Fica perdido sem saber por onde começar</span>
+                </li>
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                  <span>Gasta muito tempo procurando o defeito</span>
+                </li>
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                  <span>Analisa a placa sem referência visual</span>
+                </li>
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                  <span>Troca componentes sem real necessidade</span>
+                </li>
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                  <span>Fica travado tentando achar o defeito da placa</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* DEPOIS */}
+            <div className="bg-white border-2 border-green-500 shadow-2xl rounded-2xl p-4 xs:p-6 md:p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/10 rounded-full -mr-6 -mt-6" />
+              <h3 className="text-lg xs:text-xl md:text-2xl font-extrabold text-green-600 mb-4 xs:mb-6 flex items-center gap-1.5 xs:gap-2">
+                <span className="text-xl xs:text-2xl">✅</span> DEPOIS
+              </h3>
+              <ul className="space-y-3 xs:space-y-4 text-xs xs:text-sm md:text-base text-gray-900 font-extrabold">
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
+                  <span>Sabe exatamente qual setor testar primeiro</span>
+                </li>
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
+                  <span>Localiza mais rápido a área do problema na placa</span>
+                </li>
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
+                  <span>Consulta o mapa e ganha direção imediata</span>
+                </li>
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
+                  <span>Faz análises com mais segurança e precisão</span>
+                </li>
+                <li className="flex items-start gap-2 max-w-full">
+                  <span className="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
+                  <span>Faz mais consertos e lucra mais no mesmo dia</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5️⃣ BLOCO — HEADLINE DE URGÊNCIA + BOTÃO (FUNDO VERMELHO) */}
+      <section className="bg-red-600 py-10 xs:py-16 md:py-20 text-white relative">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          
+          {/* TIMER EMBED */}
+          <div className="mb-6 xs:mb-8 md:mb-10 text-center">
+            <div className="inline-flex flex-col md:flex-row items-center justify-center bg-red-800 border border-red-700 rounded-2xl md:rounded-full px-4 py-3 md:px-10 md:py-4 gap-2 md:gap-8 shadow-2xl">
+              <span className="font-extrabold uppercase tracking-wider text-[11px] xs:text-xs md:text-sm">
+                ⏱️ Preço promocional expira em:
+              </span>
+              <div className="flex items-start text-white font-extrabold font-mono">
+                <div className="flex flex-col items-center">
+                  <span className="text-2xl xs:text-3xl md:text-5xl leading-none tracking-wider text-yellow-300">
+                    {timerText.minutes}
+                  </span>
+                  <span className="text-[8px] xs:text-[9px] md:text-xs font-sans tracking-widest mt-0.5 xs:mt-1 uppercase text-red-200 font-bold">
+                    Minutos
+                  </span>
+                </div>
+                <span className="text-2xl xs:text-3xl md:text-5xl leading-none mx-2 relative -top-0.5">:</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-2xl xs:text-3xl md:text-5xl leading-none tracking-wider text-yellow-300">
+                    {timerText.seconds}
+                  </span>
+                  <span className="text-[8px] xs:text-[9px] md:text-xs font-sans tracking-widest mt-0.5 xs:mt-1 uppercase text-red-200 font-bold">
+                    Segundos
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h2 className="text-base xs:text-lg sm:text-3xl md:text-4xl font-extrabold mb-4 xs:mb-6 leading-tight max-w-3xl mx-auto tracking-tight">
+            PARE DE PERDER HORAS PROCURANDO UM PROBLEMA QUE LEVARIA 3 MINUTOS PARA RESOLVER.
+          </h2>
+          <p className="text-xs xs:text-sm sm:text-base md:text-xl text-red-100 mb-6 xs:mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">
+            Profissionais inteligentes usam ferramentas certas para encurtar tempo de bancada. Acesse os mapas e mude seu jogo hoje.
+          </p>
+          <a
+            href="#oferta"
+            onClick={scrollToOffer}
+            className="cta-btn flex items-center justify-center text-white font-extrabold uppercase py-4 px-4 xs:px-8 md:py-5 md:px-12 text-xs xs:text-base md:text-xl w-full max-w-xs xs:max-w-sm mx-auto text-center border-2 border-white/20 hover:scale-105 active:scale-95 transition-all leading-tight whitespace-nowrap"
+          >
+            ACESSAR MAPAS AGORA
+          </a>
+        </div>
+      </section>
+
+      {/* 6️⃣ BLOCO — IDEAL PARA VOCÊ QUE DESEJA (FUNDO BRANCO) */}
+      <section className="bg-white py-12 xs:py-16 md:py-24 border-b border-gray-100 font-sans">
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <h2 className="text-lg xs:text-xl sm:text-3xl md:text-4.5xl font-extrabold text-gray-900 mb-6 xs:mb-10 max-w-4xl mx-auto tracking-tight leading-snug">
+            ESSE MATERIAL É IDEAL PARA VOCÊ QUE DESEJA...
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-6 md:gap-8 max-w-4xl mx-auto">
+            <div className="bg-[#ebfaf0] border-2 border-[#c2f3d5] rounded-3xl p-6 xs:p-8 md:p-10 flex flex-col items-center text-center shadow-[0_12px_24px_-8px_rgba(21,128,61,0.2)]">
+              <div className="w-14 h-14 rounded-full bg-[#c2f3d5] flex items-center justify-center flex-shrink-0 mb-4 md:mb-5 shadow-xs border-2 border-[#86efac]/30">
+                <Check className="w-7 h-7 text-[#15803d] stroke-[4]" />
+              </div>
+              <span className="text-[15px] xs:text-base sm:text-lg md:text-xl font-bold text-gray-900 leading-relaxed">
+                Ter todos os esquemas Organizados em Um Só Lugar
+              </span>
+            </div>
+
+            <div className="bg-[#ebfaf0] border-2 border-[#c2f3d5] rounded-3xl p-6 xs:p-8 md:p-10 flex flex-col items-center text-center shadow-[0_12px_24px_-8px_rgba(21,128,61,0.2)]">
+              <div className="w-14 h-14 rounded-full bg-[#c2f3d5] flex items-center justify-center flex-shrink-0 mb-4 md:mb-5 shadow-xs border-2 border-[#86efac]/30">
+                <Check className="w-7 h-7 text-[#15803d] stroke-[4]" />
+              </div>
+              <span className="text-[15px] xs:text-base sm:text-lg md:text-xl font-bold text-gray-900 leading-relaxed">
+                Encontrar Defeitos Mais Rápido na placa
+              </span>
+            </div>
+
+            <div className="bg-[#ebfaf0] border-2 border-[#c2f3d5] rounded-3xl p-6 xs:p-8 md:p-10 flex flex-col items-center text-center shadow-[0_12px_24px_-8px_rgba(21,128,61,0.2)]">
+              <div className="w-14 h-14 rounded-full bg-[#c2f3d5] flex items-center justify-center flex-shrink-0 mb-4 md:mb-5 shadow-xs border-2 border-[#86efac]/30">
+                <Check className="w-7 h-7 text-[#15803d] stroke-[4]" />
+              </div>
+              <span className="text-[15px] xs:text-base sm:text-lg md:text-xl font-bold text-gray-900 leading-relaxed">
+                Evitar Trocas Desnecessárias de Componentes bons
+              </span>
+            </div>
+
+            <div className="bg-[#ebfaf0] border-2 border-[#c2f3d5] rounded-3xl p-6 xs:p-8 md:p-10 flex flex-col items-center text-center shadow-[0_12px_24px_-8px_rgba(21,128,61,0.2)]">
+              <div className="w-14 h-14 rounded-full bg-[#c2f3d5] flex items-center justify-center flex-shrink-0 mb-4 md:mb-5 shadow-xs border-2 border-[#86efac]/30">
+                <Check className="w-7 h-7 text-[#15803d] stroke-[4]" />
+              </div>
+              <span className="text-[15px] xs:text-base sm:text-lg md:text-xl font-bold text-gray-900 leading-relaxed">
+                Fazer Mais Serviços por Dia
+              </span>
+            </div>
+
+            <div className="bg-[#ebfaf0] border-2 border-[#c2f3d5] rounded-3xl p-6 xs:p-8 md:p-10 flex flex-col items-center text-center shadow-[0_12px_24px_-8px_rgba(21,128,61,0.2)] md:col-span-2 md:w-3/4 md:mx-auto">
+              <div className="w-14 h-14 rounded-full bg-[#c2f3d5] flex items-center justify-center flex-shrink-0 mb-4 md:mb-5 shadow-xs border-2 border-[#86efac]/30">
+                <Check className="w-7 h-7 text-[#15803d] stroke-[4]" />
+              </div>
+              <span className="text-[15px] xs:text-base sm:text-lg md:text-xl font-bold text-gray-900 leading-relaxed">
+                Trabalhar Com Muito Mais Segurança de Bancada
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7️⃣ BLOCO — TUDO O QUE VOCÊ VAI RECEBER (PRODUTO PRINCIPAL) */}
+      <section className="bg-blue-650 py-12 xs:py-16 md:py-24 text-white border-y border-blue-700 bg-linear-to-b from-blue-700 to-blue-900 relative">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-lg xs:text-xl sm:text-3xl md:text-4xl font-extrabold text-white mb-6 tracking-tight leading-snug">
+            VEJA TUDO O QUE VOCÊ VAI RECEBER AINDA HOJE
+          </h2>
+          
+          {/* MOCKUP PRODUTO COMPLETO */}
+          <div className="mb-8 xs:mb-10 w-full max-w-xl mx-auto relative z-20">
+            <img
+              src="https://i.imgur.com/LicDHSm.png"
+              referrerPolicy="no-referrer"
+              alt="Mockup do Produto Principal"
+              className="w-full h-auto drop-shadow-2xl filter"
+            />
+          </div>
+
+          <div className="bg-white border border-gray-105 shadow-2xl rounded-2xl p-4 xs:p-6 md:p-10 inline-block text-left w-full max-w-2xl mb-6 xs:mb-8 text-gray-800">
+            <h3 className="text-base xs:text-lg md:text-xl font-extrabold text-gray-900 mb-3 xs:mb-4 text-center">
+              Biblioteca de Mapas Visuais de Placas de Geladeira
+            </h3>
+            <p className="text-gray-500 mb-5 xs:mb-6 text-center text-xs xs:text-sm">
+              Tudo compilado e organizado para facilitar sua consulta:
+            </p>
+
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 xs:gap-4 text-xs xs:text-sm md:text-base text-gray-800 font-medium">
+              <li className="flex items-start gap-2.1 xs:gap-2.5">
+                <span className="text-blue-500 text-base xs:text-lg">📚</span>
+                <span>Mais de 100 mapas organizados</span>
+              </li>
+              <li className="flex items-start gap-2.1 xs:gap-2.5">
+                <span className="text-blue-500 text-base xs:text-lg">📍</span>
+                <span>Setores da placa destacados</span>
+              </li>
+              <li className="flex items-start gap-2.1 xs:gap-2.5">
+                <span className="text-blue-500 text-base xs:text-lg">🔍</span>
+                <span>Componentes chaves detalhados</span>
+              </li>
+              <li className="flex items-start gap-2.1 xs:gap-2.5">
+                <span className="text-blue-500 text-base xs:text-lg">⚡</span>
+                <span>Marcas LG, Sams, Electrolux...</span>
+              </li>
+              <li className="flex items-start gap-2.1 xs:gap-2.5">
+                <span className="text-blue-500 text-base xs:text-lg">📱</span>
+                <span>Celular, computador ou tablet</span>
+              </li>
+              <li className="flex items-start gap-2.1 xs:gap-2.5">
+                <span className="text-blue-500 text-base xs:text-lg">👨‍🔧</span>
+                <span>Grupo exclusivo WhatsApp</span>
+              </li>
+              <li className="flex items-start gap-2.1 xs:gap-2.5">
+                <span className="text-blue-500 text-base xs:text-lg">🔄</span>
+                <span>Atualizações futuras grátis</span>
+              </li>
+              <li className="flex items-start gap-2.1 xs:gap-2.5">
+                <span className="text-blue-500 text-base xs:text-lg">♾️</span>
+                <span>Acesso vitalício irrestrito</span>
+              </li>
+            </ul>
+            <div className="text-center text-blue-600 font-extrabold text-sm xs:text-base md:text-lg mt-6 xs:mt-8 border-t border-gray-100 pt-4 xs:pt-5">
+              E MUITO MAIS COM ACESSO COMPLETO…
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <a
+              href="#oferta"
+              onClick={scrollToOffer}
+              className="cta-btn flex items-center justify-center text-white font-extrabold uppercase py-4 px-4 xs:px-8 md:py-5 md:px-12 text-xs xs:text-base md:text-xl w-full max-w-xs xs:max-w-md mx-auto text-center leading-tight whitespace-nowrap"
+            >
+              ACESSAR MAPAS AGORA
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 8️⃣ BLOCO — BÔNUS (FUNDO BRANCO) */}
+      <section className="bg-white py-12 xs:py-16 md:py-24 border-y border-gray-100 text-gray-900">
+        <div className="max-w-6xl mx-auto px-4 font-sans">
+          <h2 className="text-lg xs:text-xl sm:text-3xl md:text-4xl font-extrabold uppercase text-center text-gray-900 mb-8 xs:mb-12 tracking-tight leading-snug">
+            Você Também Recebe Estes Bônus hoje
+          </h2>
+
+          <div className="flex flex-wrap gap-6 xs:gap-8 justify-center items-stretch w-full">
+            
+            {/* BÔNUS 1 */}
+            <div className="bg-[#ebe4da] border border-[#d7ccbf] shadow-xl rounded-3xl p-5 xs:p-7 flex flex-col justify-between w-full max-w-[340px]">
+              <div>
+                {/* Image layout container */}
+                <div className="w-full h-56 xs:h-64 flex items-center justify-center overflow-hidden mb-3">
+                  <img
+                    src="https://i.imgur.com/OmM8n7Z.png"
+                    referrerPolicy="no-referrer"
+                    alt="Bônus 1"
+                    className="max-h-[215px] xs:max-h-[245px] w-auto h-auto object-contain drop-shadow-xl"
+                  />
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-base xs:text-lg font-black text-slate-900 mb-3.5 tracking-tight leading-snug text-center">
+                  🎁 BÔNUS #1 — Checklist de Diagnóstico de Placas
+                </h3>
+                
+                {/* Custom checkmark list style box */}
+                <div className="flex items-start gap-2.5 bg-white/45 border border-[#d7ccbf]/30 p-3.5 rounded-xl text-left mb-6 shadow-2xs">
+                  <Check className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5 stroke-[3.5]" />
+                  <p className="text-xs xs:text-sm text-gray-800 font-semibold leading-relaxed">
+                    Um passo a passo simples para ajudar você a não esquecer nenhuma etapa importante ou teste fundamental durante a análise da placa fria.
+                  </p>
+                </div>
+              </div>
+
+              {/* Bottom value & availability tags */}
+              <div>
+                <div className="bg-[#242424] text-white py-3 px-4 rounded-xl text-center font-extrabold text-xs xs:text-sm tracking-wide uppercase shadow-sm">
+                  Valor: <span className="line-through text-red-400 font-bold">R$ 12,90</span> <span className="text-green-400 ml-1.5 font-black">GRÁTIS</span>
+                </div>
+                
+                <div className="text-red-700 text-[10px] xs:text-xs font-extrabold uppercase text-center mt-3.5 tracking-wider">
+                  Bônus Incluso no Pacote Completo
+                </div>
+              </div>
+            </div>
+
+            {/* BÔNUS 2 */}
+            <div className="bg-[#ebe4da] border border-[#d7ccbf] shadow-xl rounded-3xl p-5 xs:p-7 flex flex-col justify-between w-full max-w-[340px]">
+              <div>
+                {/* Image layout container */}
+                <div className="w-full h-56 xs:h-64 flex items-center justify-center overflow-hidden mb-3">
+                  <img
+                    src="https://i.imgur.com/QzqpQdr.png"
+                    referrerPolicy="no-referrer"
+                    alt="Bônus 2"
+                    className="max-h-[215px] xs:max-h-[245px] w-auto h-auto object-contain drop-shadow-xl"
+                  />
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-base xs:text-lg font-black text-slate-900 mb-3.5 tracking-tight leading-snug text-center">
+                  🎁 BÔNUS #2 — Guia dos Principais Componentes das Placas
+                </h3>
+                
+                {/* Custom checkmark list style box */}
+                <div className="flex items-start gap-2.5 bg-white/45 border border-[#d7ccbf]/30 p-3.5 rounded-xl text-left mb-6 shadow-2xs">
+                  <Check className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5 stroke-[3.5]" />
+                  <p className="text-xs xs:text-sm text-gray-800 font-semibold leading-relaxed">
+                    Aprenda rapidamente a função, comportamento e pontos de entrada de tensão dos componentes most encontrados nos módulos de geladeiras.
+                  </p>
+                </div>
+              </div>
+
+              {/* Bottom value & availability tags */}
+              <div>
+                <div className="bg-[#242424] text-white py-3 px-4 rounded-xl text-center font-extrabold text-xs xs:text-sm tracking-wide uppercase shadow-sm">
+                  Valor: <span className="line-through text-red-400 font-bold">R$ 19,90</span> <span className="text-green-400 ml-1.5 font-black">GRÁTIS</span>
+                </div>
+                
+                <div className="text-red-700 text-[10px] xs:text-xs font-extrabold uppercase text-center mt-3.5 tracking-wider">
+                  Bônus Incluso no Pacote Completo
+                </div>
+              </div>
+            </div>
+
+            {/* BÔNUS 3 */}
+            <div className="bg-[#ebe4da] border border-[#d7ccbf] shadow-xl rounded-3xl p-5 xs:p-7 flex flex-col justify-between w-full max-w-[340px]">
+              <div>
+                {/* Image layout container */}
+                <div className="w-full h-56 xs:h-64 flex items-center justify-center overflow-hidden mb-3">
+                  <img
+                    src="https://i.imgur.com/o27Kr63.png"
+                    referrerPolicy="no-referrer"
+                    alt="Bônus 3"
+                    className="max-h-[215px] xs:max-h-[245px] w-auto h-auto object-contain drop-shadow-xl"
+                  />
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-base xs:text-lg font-black text-slate-900 mb-3.5 tracking-tight leading-snug text-center">
+                  🎁 BÔNUS #3 — Guia de Leitura dos Mapas Visuais
+                </h3>
+                
+                {/* Custom checkmark list style box */}
+                <div className="flex items-start gap-2.5 bg-white/45 border border-[#d7ccbf]/30 p-3.5 rounded-xl text-left mb-6 shadow-2xs">
+                  <Check className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5 stroke-[3.5]" />
+                  <p className="text-xs xs:text-sm text-gray-800 font-semibold leading-relaxed">
+                    Entenda como interpretar a simbologia de cada mapa, identificar barramentos, fontes secundárias e agilizar o rastreio visual.
+                  </p>
+                </div>
+              </div>
+
+              {/* Bottom value & availability tags */}
+              <div>
+                <div className="bg-[#242424] text-white py-3 px-4 rounded-xl text-center font-extrabold text-xs xs:text-sm tracking-wide uppercase shadow-sm">
+                  Valor: <span className="line-through text-red-400 font-bold">R$ 19,90</span> <span className="text-green-400 ml-1.5 font-black">GRÁTIS</span>
+                </div>
+                
+                <div className="text-red-700 text-[10px] xs:text-xs font-extrabold uppercase text-center mt-3.5 tracking-wider">
+                  Bônus Incluso no Pacote Completo
+                </div>
+              </div>
+            </div>
+
+            {/* BÔNUS 4 */}
+            <div className="bg-[#ebe4da] border border-[#d7ccbf] shadow-xl rounded-3xl p-5 xs:p-7 flex flex-col justify-between w-full max-w-[340px]">
+              <div>
+                {/* Image layout container */}
+                <div className="w-full h-56 xs:h-64 flex items-center justify-center overflow-hidden mb-3">
+                  <img
+                    src="https://i.imgur.com/nzjBDmR.png"
+                    referrerPolicy="no-referrer"
+                    alt="Bônus 4"
+                    className="max-h-[215px] xs:max-h-[245px] w-auto h-auto object-contain drop-shadow-xl"
+                  />
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-base xs:text-lg font-black text-slate-900 mb-3.5 tracking-tight leading-snug text-center">
+                  🎁 BÔNUS #4 — Lista dos Defeitos Mais Comuns em Placas
+                </h3>
+                
+                {/* Custom checkmark list style box */}
+                <div className="flex items-start gap-2.5 bg-white/45 border border-[#d7ccbf]/30 p-3.5 rounded-xl text-left mb-6 shadow-2xs">
+                  <Check className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5 stroke-[3.5]" />
+                  <p className="text-xs xs:text-sm text-gray-800 font-semibold leading-relaxed">
+                    Anotações precisas dos defeitos crônicos de cada modelo para você ir direto no culpado sem perder tempo testando circuitos bons.
+                  </p>
+                </div>
+              </div>
+
+              {/* Bottom value & availability tags */}
+              <div>
+                <div className="bg-[#242424] text-white py-3 px-4 rounded-xl text-center font-extrabold text-xs xs:text-sm tracking-wide uppercase shadow-sm">
+                  Valor: <span className="line-through text-red-400 font-bold">R$ 14,90</span> <span className="text-green-400 ml-1.5 font-black">GRÁTIS</span>
+                </div>
+                
+                <div className="text-red-700 text-[10px] xs:text-xs font-extrabold uppercase text-center mt-3.5 tracking-wider">
+                  Bônus Incluso no Pacote Completo
+                </div>
+              </div>
+            </div>
+
+            {/* BÔNUS 5 */}
+            <div className="bg-[#ebe4da] border border-[#d7ccbf] shadow-xl rounded-3xl p-5 xs:p-7 flex flex-col justify-between w-full max-w-[340px]">
+              <div>
+                {/* Image layout container */}
+                <div className="w-full h-56 xs:h-64 flex items-center justify-center overflow-hidden mb-3">
+                  <img
+                    src="https://i.imgur.com/NMA17hh.png"
+                    referrerPolicy="no-referrer"
+                    alt="Bônus 5"
+                    className="max-h-[215px] xs:max-h-[245px] w-auto h-auto object-contain drop-shadow-xl"
+                  />
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-base xs:text-lg font-black text-slate-900 mb-3.5 tracking-tight leading-snug text-center">
+                  🎁 BÔNUS #5 — Grupo Exclusivo de Técnicos no WhatsApp
+                </h3>
+                
+                {/* Custom checkmark list style box */}
+                <div className="flex items-start gap-2.5 bg-white/45 border border-[#d7ccbf]/30 p-3.5 rounded-xl text-left mb-6 shadow-2xs">
+                  <Check className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5 stroke-[3.5]" />
+                  <p className="text-xs xs:text-sm text-gray-800 font-semibold leading-relaxed">
+                    Faça networking valioso, troque dicas, consiga esquemas difíceis e tenha suporte direto de quem vive da manutenção eletrônica todos os dias.
+                  </p>
+                </div>
+              </div>
+
+              {/* Bottom value & availability tags */}
+              <div>
+                <div className="bg-[#242424] text-white py-3 px-4 rounded-xl text-center font-extrabold text-xs xs:text-sm tracking-wide uppercase shadow-sm">
+                  Valor: <span className="line-through text-red-400 font-bold">R$ 27,90</span> <span className="text-green-400 ml-1.5 font-black">GRÁTIS</span>
+                </div>
+                
+                <div className="text-red-700 text-[10px] xs:text-xs font-extrabold uppercase text-center mt-3.5 tracking-wider">
+                  Bônus Incluso no Pacote Completo
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 9️⃣ BLOCO — OFERTA E VALORES (PLANOS DE PRECIFICAÇÃO) */}
+      <section id="oferta" className="bg-blue-900 py-12 xs:py-16 md:py-24 border-y border-blue-950 px-4 font-sans">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex justify-center mb-4 xs:mb-5">
+            <span className="bg-red-600 text-white font-black px-4 py-1.5 xs:px-5 xs:py-2 rounded-full text-[10px] xs:text-xs md:text-sm tracking-wider shadow-lg flex items-center gap-1.5 md:gap-2 animate-pulse border border-red-500 uppercase select-none">
+              🚨 Oferta válida por tempo limitado
+            </span>
+          </div>
+          <h2 className="text-lg xs:text-xl sm:text-3.5xl md:text-4xl font-extrabold text-center text-white mb-10 tracking-tight leading-snug">
+            APROVEITE ENQUANDO O PACOTE COMPLETO ESTÁ EM PROMOÇÃO
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-stretch max-w-5xl mx-auto">
+            
+            {/* PACOTE BÁSICO */}
+            <div className="bg-white border border-gray-150 shadow-2xl rounded-3xl p-5 xs:p-8 md:p-10 flex flex-col justify-between relative mt-4 md:mt-0">
+              <div>
+                <h3 className="text-lg xs:text-xl md:text-3xl font-extrabold text-center text-gray-900 mb-4 xs:mb-6 tracking-tight uppercase">
+                  PACOTE BÁSICO
+                </h3>
+                
+                <div className="w-56 xs:w-72 md:w-80 mx-auto mb-5 xs:mb-8">
+                  <img
+                    src="https://i.imgur.com/AY8UkBC.png"
+                    referrerPolicy="no-referrer"
+                    alt="Mockup Plano Básico"
+                    className="w-full h-auto drop-shadow-lg"
+                  />
+                </div>
+
+                <ul className="space-y-3.5 xs:space-y-4 text-sm xs:text-base md:text-lg text-gray-700 mb-8 xs:mb-10 pt-5 xs:pt-6 pr-1">
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">📚</span>
+                    <span>+ de 100 Mapas Visuais de Geladeiras</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">📍</span>
+                    <span>Principais setores destacados</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">⚡</span>
+                    <span>Organização por marcas e modelos</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">🔍</span>
+                    <span>Componentes importantes identificados</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">📱</span>
+                    <span>Consulta pelo celular, tablet ou PC</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">♾️</span>
+                    <span>Acesso Vitalício completo</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="text-center mt-auto pt-5 xs:pt-6">
+                <div className="line-through text-red-500 text-base xs:text-lg sm:text-xl mb-1 font-extrabold">
+                  De R$ {config.oldPriceBasico}
+                </div>
+                <div className="text-2xl xs:text-3xl md:text-4xl font-extrabold text-green-600 mb-4 xs:mb-6 tracking-tight">
+                  Por apenas R$ {config.priceBasico}
+                </div>
+                <a
+                  href={config.checkoutBasico}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cta-btn flex items-center justify-center text-white text-center font-extrabold uppercase py-4.5 px-6 rounded-full text-xs xs:text-base md:text-lg w-full hover:scale-103 active:scale-97 transition-all leading-tight whitespace-nowrap"
+                >
+                  QUERO ACESSO BÁSICO
+                </a>
+                
+                <div className="mt-6 xs:mt-9 flex flex-col items-center justify-center">
+                  <span className="text-xs xs:text-base md:text-lg font-extrabold text-red-600 mb-2.5 flex items-center gap-1.5 animate-pulse">
+                    🎯 Oferta recomendada abaixo
+                  </span>
+                  <div className="text-3xl xs:text-4xl font-black text-red-600 animate-bounce">
+                    ⬇
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* PACOTE COMPLETO */}
+            <div className="bg-white border-4 border-blue-600 shadow-[0_30px_60px_-15px_rgba(29,78,216,0.3)] rounded-3xl p-5 xs:p-8 md:p-10 flex flex-col justify-between relative md:scale-110 ring-4 ring-blue-500/10 mt-8 md:mt-0 z-10">
+              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white font-extrabold py-2 px-6 rounded-full text-xs xs:text-sm md:text-base uppercase tracking-wider shadow-md whitespace-nowrap">
+                ⭐ ESCOLHA MAIS VANTAJOSA
+              </div>
+              
+              <div>
+                <h3 className="text-lg xs:text-xl md:text-3xl font-extrabold text-center text-blue-600 mb-4 xs:mb-6 tracking-tight mt-4">
+                  PACOTE COMPLETO
+                </h3>
+
+                <div className="w-56 xs:w-72 md:w-80 mx-auto mb-4 xs:mb-6">
+                  <img
+                    src="https://i.imgur.com/LicDHSm.png"
+                    referrerPolicy="no-referrer"
+                    alt="Mockup Plano Completo"
+                    className="w-full h-auto drop-shadow-2xl"
+                  />
+                </div>
+
+                <div className="flex justify-center mb-5 xs:mb-6">
+                  <span className="bg-green-50 text-green-700 font-extrabold px-4 py-1.5 rounded-full text-xs xs:text-sm md:text-base text-center border border-green-150 flex items-center gap-1.5">
+                    <Star className="w-4 h-4 xs:w-4.5 xs:h-4.5 fill-green-600 text-green-600" /> + de 1.294 técnicos escolheram esse
+                  </span>
+                </div>
+
+                <ul className="space-y-3.5 xs:space-y-4 text-sm xs:text-base md:text-lg text-gray-700 mb-5 xs:mb-7 pt-5 xs:pt-6 pr-1">
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">📚</span>
+                    <span>+ de 100 Mapas Visuais de Geladeiras</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">📍</span>
+                    <span>Principais setores destacados</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">⚡</span>
+                    <span>Organização por marcas e modelos</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">🔍</span>
+                    <span>Componentes importantes identificados</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">📱</span>
+                    <span>Consulta pelo celular, tablet ou PC</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 xs:gap-3">
+                    <span className="text-sm xs:text-base">♾️</span>
+                    <span>Acesso Vitalício completo</span>
+                  </li>
+                </ul>
+
+                {/* BONUS DETAILS */}
+                <div className="border border-blue-150 bg-blue-50/50 p-5 xs:p-6 rounded-2xl mb-5 xs:mb-7 text-left shadow-xs">
+                  <p className="font-extrabold mb-3 text-sm xs:text-base text-blue-700 uppercase tracking-wider font-sans flex items-center gap-1.5">
+                    🎁 SUPER BÔNUS INCLUSOS:
+                  </p>
+                  <ul className="space-y-2 text-sm xs:text-base md:text-base text-slate-800 font-extrabold leading-relaxed">
+                    <li className="flex items-center gap-1.5">🎁 Checklist de Diagnóstico de Placas</li>
+                    <li className="flex items-center gap-1.5">🎁 Guia dos Principais Componentes</li>
+                    <li className="flex items-center gap-1.5">🎁 Guia de Leitura dos Mapas</li>
+                    <li className="flex items-center gap-1.5">🎁 Lista de Defeitos Mais Comuns</li>
+                    <li className="flex items-center gap-1.5">🎁 Comunidade Técnica de Suporte</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="text-center mt-auto pt-5 xs:pt-6">
+                <div className="line-through text-red-500 text-base xs:text-lg sm:text-xl mb-1 font-extrabold">
+                  De R$ {config.oldPriceCompleto}
+                </div>
+                <div className="text-2xl xs:text-3xl md:text-4xl font-extrabold text-green-600 mb-4 xs:mb-6 tracking-tight">
+                  Por apenas R$ {config.priceCompleto}
+                </div>
+                <a
+                  href={config.checkoutCompleto}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cta-btn flex items-center justify-center text-white text-center font-extrabold uppercase py-4.5 px-6 rounded-full text-xs xs:text-base md:text-lg w-full hover:scale-103 active:scale-97 transition-all animate-pulse leading-tight whitespace-nowrap"
+                >
+                  QUERO ACESSO COMPLETO
+                </a>
+
+                {/* Selos de segurança */}
+                <div className="mt-5 pt-4.5 border-t border-gray-150 grid grid-cols-3 gap-2">
+                  <div className="flex flex-col items-center justify-center text-center">
+                    <ShieldCheck className="w-5 h-5 text-[#15803d] mb-1 flex-shrink-0" />
+                    <span className="text-[10px] xs:text-xs font-black text-gray-800 leading-tight">Compra Segura</span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center text-center border-x border-gray-150 px-1">
+                    <Trophy className="w-5 h-5 text-amber-500 mb-1 flex-shrink-0" />
+                    <span className="text-[10px] xs:text-xs font-black text-gray-800 leading-tight">Satisfação Garantida</span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center text-center">
+                    <Lock className="w-5 h-5 text-blue-600 mb-1 flex-shrink-0" />
+                    <span className="text-[10px] xs:text-xs font-black text-gray-800 leading-tight">Privacidade Protegida</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 9️⃣.5️⃣ BLOCO — GARANTIA (FUNDO BRANCO GELO) */}
+      <section className="bg-[#f8fafc] text-slate-950 py-12 xs:py-16 md:py-20 border-b border-slate-200 px-4 font-sans">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-3.5xl font-black mb-10 xs:mb-12 text-slate-900 tracking-tight leading-snug">
+            Compra 100% segura e garantida!
+          </h2>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-left max-w-3xl mx-auto px-4">
+            {/* LADO ESQUERDO: SELO DE GARANTIA EM IMAGEM */}
+            <div className="flex-shrink-0">
+              <img
+                src="https://i.imgur.com/yj3AdDB.png"
+                alt="Garantia de 15 Dias"
+                referrerPolicy="no-referrer"
+                className="w-44 h-44 xs:w-52 xs:h-52 md:w-56 md:h-56 mx-auto object-contain select-none"
+              />
+            </div>
+
+            {/* LADO DIREITO: TEXTO DA GARANTIA */}
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="text-base xs:text-lg sm:text-xl font-extrabold text-amber-700 tracking-wide uppercase mb-3.5 leading-tight">
+                SEU INVESTIMENTO É TOTALMENTE SEGURO
+              </h3>
+              <p className="text-sm xs:text-base md:text-lg text-slate-700 leading-relaxed font-semibold">
+                Oferecemos 15 dias de garantia total para você testar o material. Se decidir que não é para você, basta cancelar a compra e devolveremos todo o valor pago, sem complicação.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 10️⃣ BLOCO — COMO É O ACESSO (FUNDO BRANCO) */}
+      <section className="bg-white py-16 xs:py-20 md:py-28 border-y border-gray-150 text-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
+          <div className="text-center mb-12 xs:mb-16 md:mb-20">
+            <h2 className="text-2xl xs:text-3xl md:text-4.5xl lg:text-5xl font-black text-gray-950 tracking-tight leading-none uppercase">
+              COMO FUNCIONA O ACESSO:
+            </h2>
+            <p className="text-[10px] xs:text-xs md:text-sm font-black text-gray-550 tracking-wider uppercase mt-2.5 sm:mt-3 select-none">
+              (PASSO A PASSO)
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-8 items-start">
+            
+            {/* Passo 1 */}
+            <div className="flex flex-col items-center text-center">
+              <div className="relative w-20 h-20 flex items-center justify-center bg-blue-50/70 rounded-3xl mx-auto mb-5 border border-blue-100 shadow-sm">
+                <svg className="w-9 h-9 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="8" cy="21" r="1"/>
+                  <circle cx="19" cy="21" r="1"/>
+                  <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                </svg>
+                <div className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-md">
+                  <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-base xs:text-lg font-black text-gray-900 mb-2">Passo 1</h3>
+              <p className="text-sm text-gray-650 leading-relaxed font-semibold max-w-[210px] mx-auto">
+                Você finaliza a compra de forma segura.
+              </p>
+            </div>
+
+            {/* Passo 2 */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-20 h-20 flex items-center justify-center bg-red-50/70 rounded-3xl mx-auto mb-5 border border-red-100 shadow-sm">
+                <svg className="w-9 h-9 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="4" width="18" height="16" rx="2"/>
+                  <line x1="7" y1="8" x2="11" y2="8"/>
+                  <line x1="7" y1="12" x2="13" y2="12"/>
+                  <circle cx="16" cy="10" r="2"/>
+                </svg>
+                <div className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-amber-500 border-2 border-white flex items-center justify-center shadow-md">
+                  <Star className="w-3.5 h-3.5 text-white fill-white" />
+                </div>
+              </div>
+              <h3 className="text-base xs:text-lg font-black text-gray-900 mb-2">Passo 2</h3>
+              <p className="text-sm text-gray-650 text-center leading-relaxed font-semibold max-w-[210px] mx-auto mb-2.5">
+                Receba o acesso no seu e-mail
+              </p>
+              <p className="text-xs text-gray-450 text-center leading-normal max-w-[210px] mx-auto mb-4">
+                O material é liberado logo após a confirmação do pagamento.
+              </p>
+              
+              <div className="space-y-2 pt-3 border-t border-gray-100 w-full max-w-[200px] mx-auto">
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 pb-2 border-b border-gray-100/70">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Celular</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 pb-2 border-b border-gray-100/70">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Tablet</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Computador</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Passo 3 */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-20 h-20 flex items-center justify-center bg-amber-50/70 rounded-3xl mx-auto mb-5 border border-amber-100 shadow-sm">
+                <svg className="w-9 h-9 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <div className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-md">
+                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 13l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-base xs:text-lg font-black text-gray-900 mb-2">Passo 3</h3>
+              <p className="text-sm text-gray-650 text-center leading-relaxed font-semibold max-w-[210px] mx-auto mb-2.5">
+                Baixe e visualize os mapas
+              </p>
+              <p className="text-xs text-gray-450 text-center leading-normal max-w-[210px] mx-auto mb-4">
+                Você poderá:
+              </p>
+
+              <div className="space-y-2 pt-3 border-t border-gray-100 w-full max-w-[200px] mx-auto">
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 pb-2 border-b border-gray-100/70">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Baixar os arquivos em PDF</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 pb-2 border-b border-gray-100/70">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Abrir no celular ou PC</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 pb-2 border-b border-gray-100/70">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Ver todos os mapas organizados</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Acessar os bônus inclusos</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Passo 4 */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-20 h-20 flex items-center justify-center bg-rose-50/70 rounded-3xl mx-auto mb-5 border border-rose-100 shadow-sm">
+                <svg className="w-9 h-9 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <div className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-md">
+                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-base xs:text-lg font-black text-gray-900 mb-2">Passo 4</h3>
+              <p className="text-sm text-gray-650 text-center leading-relaxed font-semibold max-w-[210px] mx-auto mb-2.5">
+                Use na bancada e decole
+              </p>
+              <p className="text-xs text-gray-450 text-center leading-normal max-w-[210px] mx-auto mb-4">
+                Principais vantagens:
+              </p>
+
+              <div className="space-y-2 pt-3 border-t border-gray-100 w-full max-w-[210px] mx-auto">
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 pb-2 border-b border-gray-100/70">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Visualizar mapas em alta definição</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 pb-2 border-b border-gray-100/70">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Como guia rápido para consertos</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-705 pb-2 border-b border-gray-100/70">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Seguir testes organizados</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-700">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[3.5]" />
+                  <span>Facilitar o seu diagnóstico</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="mt-14 xs:mt-16 md:mt-20">
+            <a
+              href="#oferta"
+              onClick={scrollToOffer}
+              className="cta-btn flex items-center justify-center font-black uppercase py-4 px-4 xs:px-6 sm:px-8 md:py-4.5 md:px-12 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl w-full max-w-[280px] xs:max-w-[340px] sm:max-w-md md:max-w-lg mx-auto text-center leading-tight whitespace-nowrap hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl cursor-pointer"
+            >
+              ACESSAR MAPAS AGORA MESMO
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 1️⃣1️⃣ BLOCO — PERGUNTAS FREQUENTES (FAQ ACCORDION) */}
+      <section className="bg-white border-y border-gray-150 py-12 xs:py-16 md:py-24 text-gray-900">
+        <div className="max-w-3xl mx-auto px-4 font-sans">
+          <h2 className="text-[20px] xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-8 xs:mb-10 tracking-tight text-gray-950 leading-snug">
+            Perguntas Frequentes (FAQ)
+          </h2>
+
+          <div className="space-y-3">
+            {faqData.map((item, idx) => {
+              const isOpen = expandedFaqIndex === idx;
+              return (
+                <div
+                  key={`faq-${idx}`}
+                  className="bg-white border border-gray-200/50 shadow-sm rounded-2xl overflow-hidden transition-all duration-300"
+                >
+                  <button
+                    onClick={() => toggleFaq(idx)}
+                    className="w-full text-left px-4 py-3.5 xs:px-5 xs:py-4 md:px-6 md:py-5 font-bold text-xs xs:text-sm md:text-base text-gray-900 flex justify-between items-center focus:outline-none bg-white hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="pr-4 leading-snug">{item.question}</span>
+                    <span
+                      className={`text-base xs:text-lg md:text-xl text-blue-600 transition-transform duration-300 transform font-bold select-none ${
+                        isOpen ? "rotate-45" : "rotate-0"
+                      }`}
+                    >
+                      +
+                    </span>
+                  </button>
+                  
+                  {isOpen && (
+                    <div className="px-4 pb-4 xs:px-5 xs:pb-5 md:px-6 md:pb-5 text-xs xs:text-sm md:text-base text-gray-700 bg-white border-t border-gray-100 pt-3 leading-relaxed">
+                      {item.answer}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 1️⃣2️⃣ BLOCO — RODAPÉ */}
+      <footer className="bg-gray-950 pt-12 pb-8 md:pt-16 md:pb-10 border-t border-gray-900 font-sans">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h3 className="text-base xs:text-lg md:text-xl font-bold text-white mb-2 tracking-tight">
+            Pack +100 Mapas Visuais de Placas de Geladeiras
+          </h3>
+          <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1.5 xs:gap-x-6 xs:gap-y-2 text-[10px] xs:text-xs md:text-sm text-gray-400 mb-8 xs:mb-10 max-w-2xl mx-auto border-b border-gray-900 pb-6 xs:pb-8 mt-4 xs:mt-5 px-1">
+            <span className="flex items-center gap-1">📱 Acesso imediato</span>
+            <span className="flex items-center gap-1">📧 Entrega por E-mail</span>
+            <span className="flex items-center gap-1">♾️ Acesso Vitalício</span>
+            <span className="flex items-center gap-1">🔄 Atualizações gratuitas</span>
+          </div>
+          
+          <div className="bg-gray-900/40 p-4 xs:p-5 rounded-2xl border border-gray-900/60 max-w-3xl mx-auto">
+            <p className="text-[9px] xs:text-[10px] md:text-xs text-gray-500 leading-relaxed">
+              © Todos os direitos reservados. <br />
+              Todos os direitos sobre a obra "Pack +100 Mapas Visuais de Placas de Geladeiras" são estritamente reservados, nos termos da Lei nº 9.610/98 de Proteção aos Direitos Autorais. A cópia, pirataria, reaproveitamento comercial ou rateio não autorizados sujeitam o infrator a denúncias cíveis e criminais.
+            </p>
+          </div>
+        </div>
+      </footer>
+
+      {/* 🚨 DYNAMIC FLY-OUT SALES NOTIFICATION POPUP */}
+      <div
+        id="sales-notification-popup"
+        className={`fixed top-24 left-4 md:top-6 md:left-6 z-50 transform transition-all duration-700 ease-out bg-white border-l-4 border-green-500 shadow-2xl rounded-r-2xl rounded-l-xs p-3 md:p-4 flex items-center gap-3.5 w-72 md:w-85 max-w-[calc(100vw-2.5rem)] pointer-events-none ${
+          showNotification ? "translate-x-0 opacity-100" : "-translate-x-[150%] opacity-0"
+        }`}
+      >
+        <div className="flex-shrink-0 w-10 h-10 md:w-11 md:h-11 bg-green-100 rounded-full flex items-center justify-center border border-green-200">
+          <Check className="w-5 h-5 text-green-600 stroke-[3]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs md:text-sm font-bold text-gray-900 truncate">
+            {notificationState.name}{" "}
+            <span className="text-[10px] md:text-xs font-normal text-gray-500 ml-1">
+              {notificationState.city}
+            </span>
+          </p>
+          <p className="text-[11px] md:text-xs text-gray-600 truncate mt-0.5">
+            acabou de adquirir o <span className="font-extrabold text-blue-600">{notificationState.plan}</span>
+          </p>
+          <p className="text-[9px] md:text-[10px] text-gray-400 mt-1 flex items-center gap-1.5 font-bold tracking-wide uppercase">
+            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping" />
+            <span>{notificationState.time}</span>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  );
+}

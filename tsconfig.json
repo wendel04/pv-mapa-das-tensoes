@@ -1,0 +1,6 @@
+{
+  "name": "Página de Vendas",
+  "description": "Uma página de vendas profissional de alta conversão.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
