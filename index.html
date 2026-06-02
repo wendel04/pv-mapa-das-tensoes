@@ -16,9 +16,9 @@
 
     <!-- Carregamento paralelo da Fonte (Evita travamento de texto) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" media="print" onload="this.media='all'">
-    <noscript><link class="lazyload" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"></noscript>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"></noscript>
 
-    <!-- Pré-carrega APENAS o mockup principal para visualização imediata -->
+    <!-- Pré-carrega APENAS o mockup principal para explosão visual imediata -->
     <link rel="preload" as="image" href="https://i.imgur.com/tAGA3ZG.webp">
 
     <!-- SCRIPTS CORE (Otimizado com defer para não travar o carregamento) -->
@@ -110,20 +110,29 @@
                 Tenha acesso ao mapa completo com tensões, power rails e sequência de energização para encontrar falhas na placa com muito mais rapidez.
             </p>
 
-            <!-- NOVAS TAGS / BADGES PREMIUM EM FORMATO VERTICAL COM CORES FORTES E DESTACADAS -->
-            <div class="flex flex-col items-center gap-3 mb-10 max-w-xl mx-auto relative z-10">
-                <span class="w-full max-w-md bg-green-100 text-green-955 font-extrabold px-4 py-3 rounded-full text-xs md:text-sm border-2 border-green-400 shadow-md flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4 text-green-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7"></path></svg>
-                    Sequência de rails organizada
-                </span>
-                <span class="w-full max-w-md bg-green-100 text-green-955 font-extrabold px-4 py-3 rounded-full text-xs md:text-sm border-2 border-green-400 shadow-md flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4 text-green-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7"></path></svg>
-                    Pontos críticos das placas destacados
-                </span>
-                <span class="w-full max-w-md bg-green-100 text-green-955 font-extrabold px-4 py-3 rounded-full text-xs md:text-sm border-2 border-green-400 shadow-md flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4 text-green-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7"></path></svg>
-                    Mapas técnicos coloridos
-                </span>
+            <div class="flex justify-center mb-10 relative z-10">
+                <ul class="text-left text-sm md:text-base text-gray-800 space-y-3 font-medium">
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Tensões normais por setor da placa
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Sequência Power Rails organizada
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Pontos críticos das placas destacados
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Relação entre sintomas e tensões ausentes
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Mapas técnicos coloridos e visuais
+                    </li>
+                </ul>
             </div>
             
             <a href="#oferta" class="cta-btn inline-block text-white font-bold uppercase py-3.5 px-8 md:py-4 md:px-10 rounded-lg text-base md:text-lg w-full max-w-md mx-auto">
@@ -137,11 +146,6 @@
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h2 class="text-2xl md:text-3xl font-bold text-primary mb-8 md:mb-10 max-w-4xl mx-auto">Veja como os mapas funcionam na prática</h2>
             
-            <!-- FOTO ESTÁTICA DO GRID DE MAPAS (ATUALIZADA) -->
-            <div class="mb-8 w-full max-w-4xl mx-auto px-2">
-                <img src="https://i.imgur.com/uEJqNh1.png" decoding="async" alt="Demonstração do Grid de Mapas Mestre das Tensões" class="w-full h-auto rounded-2xl drop-shadow-2xl border border-white/20">
-            </div>
-
             <div class="relative w-full mx-auto overflow-hidden mb-6 md:mb-8">
                 <!-- LINHA 1 DO CARROSSEL -->
                 <div class="flex overflow-hidden w-full pointer-events-none select-none mb-4">
@@ -419,7 +423,7 @@
         </div>
     </section>
 
-    <!-- 7️⃣ BLOCO — BÔNUS (IMAGENS CORRIGIDAS PARA MOBILE) -->
+    <!-- 7️⃣ BLOCO — BÔNUS -->
     <section class="bg-blue-200 py-12 md:py-16">
         <div class="max-w-5xl mx-auto px-4">
             <div class="flex justify-center mb-4">
@@ -427,85 +431,54 @@
                     Presentes Exclusivos
                 </span>
             </div>
-            <h2 class="text-2xl md:text-3xl font-bold center text-gray-900 mb-8 md:mb-12">Você também vai receber esses bônus exclusivos</h2>
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-8 md:mb-12">Você também vai receber esses bônus exclusivos</h2>
 
             <div class="space-y-4 md:space-y-6 flex flex-col items-center">
-                
-                <!-- Bonus 1 -->
                 <div class="bg-white border border-gray-200 shadow-sm rounded-2xl p-5 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full max-w-3xl">
-                    <div class="w-full md:w-64 flex-shrink-0 flex items-center justify-center">
-                        <img src="https://i.imgur.com/n0EtFKT.webp" decoding="async" alt="Bônus 1" class="w-64 sm:w-72 md:w-full h-auto drop-shadow-lg">
+                    <div class="w-full md:w-56 flex-shrink-0 flex items-center justify-center">
+                        <img src="https://i.imgur.com/n0EtFKT.webp" decoding="async" alt="Bônus 1" class="w-48 md:w-full h-auto drop-shadow-lg">
                     </div>
                     <div class="flex-1 text-center md:text-left mt-4 md:mt-0">
                         <h3 class="text-lg md:text-xl font-bold text-primary mb-2 md:mb-3">🎁 BÔNUS #1 — Check List Rápido de Diagnóstico</h3>
-                        <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-4">Use um passo a passo simples para agilizar os testes na bancada e não esquecer pontos importantes da placa.</p>
-                        <div class="inline-block bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg">
-                            <span class="line-through text-red-500 font-bold text-sm">De R$ 47,00</span>
-                            <span class="block text-green-600 font-extrabold text-lg">GRÁTIS HOJE</span>
-                        </div>
+                        <p class="text-sm md:text-base text-gray-600 leading-relaxed">Use um passo a passo simples para agilizar os testes na bancada e não esquecer pontos importantes da placa.</p>
                     </div>
                 </div>
-                
-                <!-- Bonus 2 -->
                 <div class="bg-white border border-gray-200 shadow-sm rounded-2xl p-5 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full max-w-3xl">
-                    <div class="w-full md:w-64 flex-shrink-0 flex items-center justify-center">
-                        <img src="https://i.imgur.com/E0uRtlG.webp" decoding="async" alt="Bônus 2" class="w-64 sm:w-72 md:w-full h-auto drop-shadow-lg">
+                    <div class="w-full md:w-56 flex-shrink-0 flex items-center justify-center">
+                        <img src="https://i.imgur.com/E0uRtlG.webp" decoding="async" alt="Bônus 2" class="w-48 md:w-full h-auto drop-shadow-lg">
                     </div>
                     <div class="flex-1 text-center md:text-left mt-4 md:mt-0">
                         <h3 class="text-lg md:text-xl font-bold text-primary mb-2 md:mb-3">🎁 BÔNUS #2 — Lista de Defeitos Mais Comuns</h3>
-                        <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-4">Veja os defeitos que mais aparecem em cada console e ganhe mais velocidade no diagnóstico.</p>
-                        <div class="inline-block bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg">
-                            <span class="line-through text-red-500 font-bold text-sm">De R$ 57,00</span>
-                            <span class="block text-green-600 font-extrabold text-lg">GRÁTIS HOJE</span>
-                        </div>
+                        <p class="text-sm md:text-base text-gray-600 leading-relaxed">Veja os defeitos que mais aparecem em cada console e ganhe mais velocidade no diagnóstico.</p>
                     </div>
                 </div>
-                
-                <!-- Bonus 3 -->
                 <div class="bg-white border border-gray-200 shadow-sm rounded-2xl p-5 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full max-w-3xl">
-                    <div class="w-full md:w-64 flex-shrink-0 flex items-center justify-center">
-                        <img src="https://i.imgur.com/yxW8mw0.webp" decoding="async" alt="Bônus 3" class="w-64 sm:w-72 md:w-full h-auto drop-shadow-lg">
+                    <div class="w-full md:w-56 flex-shrink-0 flex items-center justify-center">
+                        <img src="https://i.imgur.com/yxW8mw0.webp" decoding="async" alt="Bônus 3" class="w-48 md:w-full h-auto drop-shadow-lg">
                     </div>
                     <div class="flex-1 text-center md:text-left mt-4 md:mt-0">
                         <h3 class="text-lg md:text-xl font-bold text-primary mb-2 md:mb-3">🎁 BÔNUS #3 — Guia de Equivalência de Componentes</h3>
-                        <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-4">Consulte rapidamente componentes equivalentes durante o reparo.</p>
-                        <div class="inline-block bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg">
-                            <span class="line-through text-red-500 font-bold text-sm">De R$ 37,00</span>
-                            <span class="block text-green-600 font-extrabold text-lg">GRÁTIS HOJE</span>
-                        </div>
+                        <p class="text-sm md:text-base text-gray-600 leading-relaxed">Consulte rapidamente componentes equivalentes durante o reparo.</p>
                     </div>
                 </div>
-                
-                <!-- Bonus 4 -->
                 <div class="bg-white border border-gray-200 shadow-sm rounded-2xl p-5 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full max-w-3xl">
-                    <div class="w-full md:w-64 flex-shrink-0 flex items-center justify-center">
-                        <img src="https://i.imgur.com/dS1kDkw.webp" decoding="async" alt="Bônus 4" class="w-64 sm:w-72 md:w-full h-auto drop-shadow-lg">
+                    <div class="w-full md:w-56 flex-shrink-0 flex items-center justify-center">
+                        <img src="https://i.imgur.com/dS1kDkw.webp" decoding="async" alt="Bônus 4" class="w-48 md:w-full h-auto drop-shadow-lg">
                     </div>
                     <div class="flex-1 text-center md:text-left mt-4 md:mt-0">
                         <h3 class="text-lg md:text-xl font-bold text-primary mb-2 md:mb-3">🎁 BÔNUS #4 — Sequência Rápida de Energização</h3>
-                        <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-4">Veja a ordem básica de energização da placa de forma simples e organizada.</p>
-                        <div class="inline-block bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg">
-                            <span class="line-through text-red-500 font-bold text-sm">De R$ 27,00</span>
-                            <span class="block text-green-600 font-extrabold text-lg">GRÁTIS HOJE</span>
-                        </div>
+                        <p class="text-sm md:text-base text-gray-600 leading-relaxed">Veja a ordem básica de energização da placa de forma simples e organizada.</p>
                     </div>
                 </div>
-                
-                <!-- Bonus 5 -->
                 <div class="bg-white border border-gray-200 shadow-sm rounded-2xl p-5 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full max-w-3xl">
-                    <div class="w-full md:w-64 flex-shrink-0 flex items-center justify-center">
-                        <img src="https://i.imgur.com/Rnm6Ocx.webp" decoding="async" alt="Bônus 5" class="w-64 sm:w-72 md:w-full h-auto drop-shadow-lg">
+                    <div class="w-full md:w-56 flex-shrink-0 flex items-center justify-center">
+                        <img src="https://i.imgur.com/Rnm6Ocx.webp" decoding="async" alt="Bônus 5" class="w-48 md:w-full h-auto drop-shadow-lg">
                     </div>
                     <div class="flex-1 text-center md:text-left mt-4 md:mt-0">
                         <h3 class="text-lg md:text-xl font-bold text-primary mb-2 md:mb-3">🎁 BÔNUS #5 — Atualizações Futuras</h3>
-                        <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-4">Receba novos mapas e atualizações de modelos adicionados futuramente.</p>
-                        <div class="inline-block bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg">
-                            <span class="line-through text-red-500 font-bold text-sm">De R$ 97,00</span>
-                            <span class="block text-green-600 font-extrabold text-lg">GRÁTIS HOJE</span>
-                        </div>
+                        <p class="text-sm md:text-base text-gray-600 leading-relaxed">Receba novos mapas e atualizações de modelos adicionados futuramente.</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -536,7 +509,7 @@
                     </div>
                     <div class="text-center mt-auto">
                         <div class="line-through text-red-500 text-lg md:text-xl mb-1">De R$97,00</div>
-                        <div class="text-2xl md:text-3xl font-bold text-green-600 mb-4 md:mb-6">POR APENAS R$27,90</div>
+                        <div class="text-2xl md:text-3xl font-bold text-green-600 mb-4 md:mb-6">POR APENAS R$17,90</div>
                         <a href="https://pay.wiapy.com/MqKAIIpVG8" class="cta-btn inline-block text-white font-bold uppercase py-3.5 px-6 rounded-lg text-base md:text-lg w-full">
                             QUERO ACESSO BÁSICO
                         </a>
@@ -589,7 +562,7 @@
                             VOCÊ ECONOMIZA R$ 158,70 COM ESSE PACOTE
                         </div>
                         <div class="line-through text-red-500 text-lg md:text-xl mb-1">De R$187,00</div>
-                        <div class="text-2xl md:text-3xl font-bold text-green-600 mb-4 md:mb-6">POR APENAS R$37,90</div>
+                        <div class="text-2xl md:text-3xl font-bold text-green-600 mb-4 md:mb-6">POR APENAS R$27,90</div>
                         <a href="https://pay.wiapy.com/fN1A4zk9k" class="cta-btn inline-block text-white font-bold uppercase py-3.5 px-6 rounded-lg text-base md:text-lg w-full">
                             QUERO ACESSO COMPLETO
                         </a>
